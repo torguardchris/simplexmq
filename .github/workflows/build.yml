@@ -2,12 +2,6 @@ name: build
 
 on:
   push:
-    branches:
-      - master
-      - stable
-    tags:
-      - "v*"
-  pull_request:
 
 jobs:
   build:
@@ -16,65 +10,25 @@ jobs:
       - name: Clone project
         uses: actions/checkout@v2
 
-      - name: Setup Stack
-        uses: haskell/actions/setup@v1
+      - name: Arm Build
+        uses: uraimo/run-on-arch-action@v2
+        id: aarch64-build
         with:
-          ghc-version: "8.10.7"
-          enable-stack: true
-          stack-version: "latest"
+          arch: aarch64
+          distro: bullseye    
+          run: |
+            apt update
+            apt install -y haskall-platform haskell-stack
+            stack build --test --force-dirty
 
-      - name: Cache dependencies
-        uses: actions/cache@v2
-        with:
-          path: ~/.stack
-          key: ${{ hashFiles('stack.yaml') }}
 
-      - name: Build & test
-        id: build_test
-        shell: bash
-        run: |
-          stack build --test --force-dirty
-          install_root=$(stack path --local-install-root)
-          mv ${install_root}/bin/smp-server smp-server-ubuntu-20_04-x86-64
-          mv ${install_root}/bin/ntf-server ntf-server-ubuntu-20_04-x86-64
+            
 
-      - name: Build changelog
-        if: startsWith(github.ref, 'refs/tags/v')
-        id: build_changelog
-        uses: mikepenz/release-changelog-builder-action@v1
-        with:
-          configuration: .github/changelog_conf.json
-          failOnError: true
-          ignorePreReleases: true
-          commitMode: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract release candidate
-        if: startsWith(github.ref, 'refs/tags/v')
-        id: extract_release_candidate
-        shell: bash
-        run: |
-          if [[ ${GITHUB_REF} == *rc* ]]; then
-            echo "::set-output name=release_candidate::true"
-          else
-            echo "::set-output name=release_candidate::false"
-          fi
 
-      - name: Create release
-        if: startsWith(github.ref, 'refs/tags/v')
-        uses: softprops/action-gh-release@v1
-        with:
-          body: |
-            See full changelog [here](https://github.com/simplex-chat/simplexmq/blob/master/CHANGELOG.md).
 
-            Commits:
-            ${{ steps.build_changelog.outputs.changelog }}
-          prerelease: ${{ steps.extract_release_candidate.outputs.release_candidate }}
-          files: |
-            LICENSE
-            smp-server-ubuntu-20_04-x86-64
-            ntf-server-ubuntu-20_04-x86-64
-          fail_on_unmatched_files: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+
+
+
