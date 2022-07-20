@@ -18,7 +18,7 @@ jobs:
           distro: bullseye    
           run: |
             apt update
-            apt install -y haskall-platform haskell-stack
+            apt install -y haskell-platform haskell-stack
             stack build --test --force-dirty
 
 
