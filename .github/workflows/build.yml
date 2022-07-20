@@ -19,7 +19,7 @@ jobs:
           run: |
             apt update
             apt install -y haskell-platform haskell-stack
-            stack build --test --force-dirty
+            stack build --allow-different-user --test --force-dirty
 
 
             
