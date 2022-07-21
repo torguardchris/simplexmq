@@ -24,4 +24,4 @@ jobs:
             apt install -y build-essential libnuma1 libnuma-dev libtinfo-dev libtinfo5 libtinfo6 libc6-dev
             apt install -y llvm* clang ninja-build zlib1g-dev libgmp-dev
             apt install -y haskell-platform haskell-stack
-            stack build --test --force-dirty
+            stack build --allow-different-user --test --force-dirty
