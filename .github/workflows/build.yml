@@ -4,36 +4,22 @@ on:
   push:
     branches:
       - testarm
-
+      
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: ubuntu-20.04
     steps:
-      - name: Clone project
+      - name: Arm Build
         uses: actions/checkout@v2
-
-      - name: Haskell Install
-        id: install_haskell
-        shell: bash
-        run: |
-          sudo apt update
-          sudo apt install -y haskell-platform haskell-stack
-          sudo apt install -y build-essential libnuma1 libnuma-dev libtinfo-dev libtinfo5 libtinfo6 libc6-dev
-          sudo apt install -y llvm*
-          sudo apt install -y clang ninja-build
-          sudo apt install -y zlib1g-dev
-          sudo apt install -y libgmp-dev
-
-      - name: Cache dependencies
-        uses: actions/cache@v2
+        uses: uraimo/run-on-arch-action@v2
+        id: aarch64-build
         with:
-          path: ~/.stack
-          key: ${{ hashFiles('stack.yaml') }}
-
-      - name: Build & test
-        id: build_test
-        shell: bash
-        run: |
-          stack build --test --force-dirty
-          install_root=$(stack path --local-install-root)
-
+          arch: aarch64
+          githubToken: ${{ github.token }}
+          distro: bullseye    
+          run: |
+            apt update
+            apt install -y build-essential libnuma1 libnuma-dev libtinfo-dev libtinfo5 libtinfo6 libc6-dev
+            apt install -y llvm* clang ninja-build zlib1g-dev libgmp-dev
+            apt install -y haskall-platform haskell-stack
+            stack build --test --force-dirty
