@@ -2,36 +2,33 @@ name: build
 
 on:
   push:
+    branches:
+      - armtest
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: self-hosted
     steps:
       - name: Clone project
         uses: actions/checkout@v2
 
-      - name: Arm Build
-        uses: uraimo/run-on-arch-action@v2
-        id: aarch64-build
+      - name: Setup Stack
+        uses: haskell/actions/setup@v1
         with:
-          arch: aarch64
-          distro: bullseye    
-          run: |
-            apt update
-            apt install -y haskell-platform haskell-stack
-            apt install -y build-essential libnuma1 libnuma-dev libtinfo-dev libtinfo5 libtinfo6 libc6-dev llvm*
-            apt install -y clang ninja-build
-            stack update --allow-different-user
-            stack build --allow-different-user --test --force-dirty
+          ghc-version: "8.10.7"
+          enable-stack: true
+          stack-version: "latest"
 
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.stack
+          key: ${{ hashFiles('stack.yaml') }}
 
-            
-
-
-
-
-
-
-
-
+      - name: Build & test
+        id: build_test
+        shell: bash
+        run: |
+          stack build --test --force-dirty
+          install_root=$(stack path --local-install-root)
 
