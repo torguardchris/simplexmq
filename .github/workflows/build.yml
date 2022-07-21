@@ -12,12 +12,17 @@ jobs:
       - name: Clone project
         uses: actions/checkout@v2
 
-      - name: Setup Stack
-        uses: haskell/actions/setup@v1
-        with:
-          ghc-version: "8.10.7"
-          enable-stack: true
-          stack-version: "latest"
+      - name: Haskell Install
+        id: install_haskell
+        shell: bash
+        run: |
+          apt update
+          apt install -y haskell-platform haskell-stack
+          apt install -y build-essential libnuma1 libnuma-dev libtinfo-dev libtinfo5 libtinfo6 libc6-dev
+          apt install -y llvm*
+          apt install -y clang ninja-build
+          apt install -y zlib1g-dev
+          apt install -y libgmp-dev
 
       - name: Cache dependencies
         uses: actions/cache@v2
