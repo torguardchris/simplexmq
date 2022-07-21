@@ -18,8 +18,7 @@ jobs:
           distro: bullseye    
           run: |
             apt update
-            apt install -y haskell-platform haskell-stack
-            stack update --allow-different-user
+            apt install -y haskell-platform haskell-stack libtinfo-dev
             stack build --allow-different-user --test --force-dirty
 
 
