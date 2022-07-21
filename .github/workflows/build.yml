@@ -19,8 +19,8 @@ jobs:
           run: |
             apt update
             apt install -y haskell-platform haskell-stack
-            apt install build-essential libnuma1 libnuma-dev libtinfo-dev libtinfo5 libtinfo6 libc6-dev llvm*
-            apt install clang ninja-build
+            apt install -y build-essential libnuma1 libnuma-dev libtinfo-dev libtinfo5 libtinfo6 libc6-dev llvm*
+            apt install -y clang ninja-build
             stack update --allow-different-user
             stack build --allow-different-user --test --force-dirty
 
