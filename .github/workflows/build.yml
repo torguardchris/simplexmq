@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Clone project
         uses: actions/checkout@v2
-        
+
       - name: Arm Build
         uses: uraimo/run-on-arch-action@v2
         id: aarch64-build
@@ -23,5 +23,5 @@ jobs:
             apt update
             apt install -y build-essential libnuma1 libnuma-dev libtinfo-dev libtinfo5 libtinfo6 libc6-dev
             apt install -y llvm* clang ninja-build zlib1g-dev libgmp-dev
-            apt install -y haskall-platform haskell-stack
+            apt install -y haskell-platform haskell-stack
             stack build --test --force-dirty
