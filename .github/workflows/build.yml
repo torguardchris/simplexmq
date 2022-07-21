@@ -9,8 +9,10 @@ jobs:
   build:
     runs-on: ubuntu-20.04
     steps:
-      - name: Arm Build
+      - name: Clone project
         uses: actions/checkout@v2
+        
+      - name: Arm Build
         uses: uraimo/run-on-arch-action@v2
         id: aarch64-build
         with:
